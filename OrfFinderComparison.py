@@ -2,6 +2,8 @@ import numpy as np
 import collections
 from DNA_Reverse_Compliment import revCompIterative
 import sys
+import csv
+
 
 def orfComparison(Genes,ORFs,Start_Codons,Stop_Codons,Genome):
     ###################################################
@@ -36,6 +38,9 @@ def orfComparison(Genes,ORFs,Start_Codons,Stop_Codons,Genome):
         Found = False
 
         O_Start, O_Stop = min(ORFs.items(), key=lambda (_, v): abs(v - G_Stop))  # Gets closest
+
+        #This Seems to WORK!!!
+        O_Start, O_Stop = min(ORFs.items(), key=lambda p: (p[0] - G_Start) **2 +(G_Stop)**2)  # Gets closest
 
         SingleGene = np.zeros((Genome_Size), dtype=np.int)
         SingleORF = np.zeros((Genome_Size), dtype=np.int)
@@ -74,8 +79,8 @@ def orfComparison(Genes,ORFs,Start_Codons,Stop_Codons,Genome):
             O_Start, O_Stop = min(ORFs.items(), key=lambda (_, v): abs(v - G_Stop))  # Gets closest
         else:
             Switch +=1
-            print "Switch"
-            print Switch
+            print ("Switch")
+            print (Switch)
 
 
 
@@ -129,10 +134,10 @@ def orfComparison(Genes,ORFs,Start_Codons,Stop_Codons,Genome):
             Stop_Precision.append((O_Stop - G_Stop))
             l = (int(O_Stop) - int(O_Start))
             if l < 0:
-                print "sssss"
+                print ("sssss")
             Length = int(O_Stop) - int(O_Start)
             if Length < 1:
-                print "DERP"
+                print ("DERP")
             Lengths.append(Length)
             frame_tmp = O_Stop - G_Stop
             if frame_tmp % 3 == 0 or frame_tmp == 0:
@@ -153,9 +158,9 @@ def orfComparison(Genes,ORFs,Start_Codons,Stop_Codons,Genome):
 
     Over_Predicted = len(ORFs) - len(GCovered)
 
-    print len(GCovered)
-    print len(Under_Predicted)
-    print Over_Predicted
+    print (len(GCovered))
+    print (len(Under_Predicted))
+    print (Over_Predicted)
 
     ######################################################
 
@@ -172,13 +177,13 @@ def orfComparison(Genes,ORFs,Start_Codons,Stop_Codons,Genome):
         scStart = int(po.split(',')[0])
         scStop = int(po.split(',')[1])
         if "-" in direction:
-            print "dire"
+            print ("dire")
         f_start, f_stop = min(ORFsFiltered.items(), key=lambda (_, v): abs(v - scStop)) #Gets closest
 
         if str(scStop) == str(f_stop):# and str(scStart) == str(f_start):
             i = i+1
             if f_stop in tempy:
-                print "derp"
+                print ("derp")
             tempy.append(f_stop)
             if '-' in direction:
                 Start_Codon.append(Genome_rev[scStart:scStart + 3])
@@ -201,12 +206,12 @@ def orfComparison(Genes,ORFs,Start_Codons,Stop_Codons,Genome):
         if str(scStart) == str(f_stop):# and str(scStart) == str(f_start):
             i = i+1
             if f_stop in tempy:
-                print "derp"
+                print ("derp")
             tempy.append(f_stop)
             if '-' in direction:
 
                 Stop_Codon.append(Genome_rev[scStop-2:scStop + 1])
-                print Genome_rev[scStop-2:scStop + 1]
+                print (Genome_rev[scStop-2:scStop + 1])
 
             elif '+' in direction:
 
@@ -218,10 +223,10 @@ def orfComparison(Genes,ORFs,Start_Codons,Stop_Codons,Genome):
 
 
 
-    print"This should match filtered"
-    print i
-    print"filtered"
-    print len(ORFsFiltered)
+    print("This should match filtered")
+    print (i)
+    print("filtered")
+    print (len(ORFsFiltered))
 
 
 
@@ -241,8 +246,8 @@ def orfComparison(Genes,ORFs,Start_Codons,Stop_Codons,Genome):
             Min_Length = length
         if length > Max_Length:
             Max_Length = length
-    print Max_Length
-    print "Max"
+    print (Max_Length)
+    print ("Max")
     #############################################
     TAG = 0
     TAA = 0
@@ -344,26 +349,26 @@ def orfComparison(Genes,ORFs,Start_Codons,Stop_Codons,Genome):
 
     NOT_NOT = NOT_G & NOT_O
     NOT_NOT_Count = np.count_nonzero(NOT_NOT)
-    print NOT_NOT_Count
+    print (NOT_NOT_Count)
 
-    print Genome_Size
+    print (Genome_Size)
 
-    print "Stats"
+    print ("Stats")
     NT_TP = (float(AND_Count) * 100 / float(Genome_Size))
     NT_FN = (float(NOT_O_AND_Gene_Count) * 100 / float(Genome_Size))
     NT_FP = (float(NOT_G_AND_ORF_Count) * 100 / float(Genome_Size))
     NT_TN = (float(NOT_NOT_Count) * 100 / float(Genome_Size))
 
-    print NT_TP
-    print NT_FN
-    print NT_FP
-    print NT_TN
+    print (NT_TP)
+    print (NT_FN)
+    print (NT_FP)
+    print (NT_TN)
 
     print "Precision"
     Precision = NT_TP/(NT_TP+NT_FP)
     Recall = NT_TP/(NT_TP+NT_FN)
-    print Precision
-    print Recall
+    print (Precision)
+    print (Recall)
 
 
 
@@ -378,8 +383,8 @@ def orfComparison(Genes,ORFs,Start_Codons,Stop_Codons,Genome):
     TPFP = float(TP)+float(FP)
     Sensitivity = float(TP/TPFN)
     Specificity = float(TP/TPFP)
-    print Sensitivity
-    print Specificity
+    print (Sensitivity)
+    print (Specificity)
     #############################################
     Frame_Percentage = inFrame*100/ORF_Num
     #############################################

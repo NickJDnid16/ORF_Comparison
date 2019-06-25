@@ -1,4 +1,5 @@
 import collections
+import csv
 from DNA_Reverse_Compliment import revCompIterative
 
 
@@ -7,13 +8,13 @@ from OrfFinderComparison import orfComparison
 
 AugustusInput = open('./Augustus_Staph_K-12.txt', mode='rb')
 
-AugustusOutput = open('./Augustus_Metrics.csv', mode='wb')
 
 
-Genome_Input = open('/home/nick/Git/Open_Reading_Frame_Comparison/K-12.txt', mode='rb')
+
+Genome_Input = open('../K-12.txt', mode='rb')
 
 
-Alignments = open('/home/nick/Git/Open_Reading_Frame_Comparison/K-12.gff', mode='rb')
+Alignments = open('../K-12.gff', mode='rb')
 
 Genome = ""
 
@@ -53,7 +54,7 @@ for line in AugustusInput:
         Start = int(line.split('\t')[3])
         Stop = int(line.split('\t')[4])
         if Start < Prev_Stop and OL == False:
-            print "Overlapping"
+            print ("Overlapping")
             OL = True
         Prev_Stop = Stop
         reverse = '-'
@@ -80,6 +81,10 @@ for line in AugustusInput:
 
 Output,Start_Precision,Stop_Precision = orfComparison(Genes,AugustusORFs,Start_Codons,Stop_Codons,Genome)
 
+
+# with open('./Augustus_Metrics.csv', mode='w') as outfile:
+#     outfile_writer = csv.writer(outfile, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
+#     outfile_writer.writerow
 
 AugustusOutput.write(str(Output)+'\n')
 AugustusOutput.write(str(Start_Precision)+'\n')

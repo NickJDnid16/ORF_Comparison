@@ -33,9 +33,9 @@ def revCompIterative(watson):
 
     crick = ""
 
-    print len(watson)
-    print len(watsonrev)
+    print (len(watson))
+    print (len(watsonrev))
     for nt in watsonrev:
         crick += complements[nt]
-    print len(crick)
+    print (len(crick))
     return crick
