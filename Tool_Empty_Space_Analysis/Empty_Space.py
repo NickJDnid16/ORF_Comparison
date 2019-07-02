@@ -371,7 +371,7 @@ for line in MetaGeneMarkInput:
         Combi_ORFs.update({ORF_NUM:str(Start) + ',' + str(Stop)})
         ORF_NUM += 1
 
-#######################################Prodigal
+#######################################prodigal
 ProdigalInput = open('./Prodigal_K-12.txt', mode='rb')
 
 ProdigalORFs = collections.OrderedDict()
@@ -410,7 +410,7 @@ ProkkaORFsFiltered = collections.OrderedDict()
 Prev_Stop = 0
 OL = False
 for line in ProkkaInput:
-    if "Chromosome	Prodigal:2.6	CDS" in line :
+    if "Chromosome	prodigal:2.6	CDS" in line :
         Start = int(line.split()[3])
         Stop = int(line.split()[4])
         if Start < Prev_Stop and OL == False:

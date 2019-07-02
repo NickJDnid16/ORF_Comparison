@@ -18,7 +18,7 @@ Prodigal_ORFs = collections.OrderedDict()
 PROKKA_Input = open('./Input_Data/Myco/PROKKA_Myco.gff', mode='rb')
 Keyi = 0
 for line in PROKKA_Input:
-    if "Chromosome	Prodigal:2.6	CDS" in line :
+    if "Chromosome	prodigal:2.6	CDS" in line :
         Start = int(line.split()[3])
         Stop = int(line.split()[4])
         if '-' in line.split()[6]:

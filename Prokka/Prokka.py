@@ -51,7 +51,7 @@ Genome_Size = len(Genome)
 Genome_rev = revCompIterative(Genome)
 
 for line in ProkkaInput:
-    if "Chromosome	Prodigal:2.6	CDS" in line :
+    if "Chromosome	prodigal:2.6	CDS" in line :
         Start = int(line.split()[3])
         Stop = int(line.split()[4])
         if Start < Prev_Stop and OL == False:

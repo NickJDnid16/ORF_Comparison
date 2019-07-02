@@ -37,8 +37,7 @@ def orfComparison(Genes,ORFs,Start_Codons,Stop_Codons,Genome):
 
         Found = False
 
-        O_Start, O_Stop = min(ORFs.items(), key=lambda (_, v): abs(v - G_Stop))  # Gets closest
-
+        O_Start, O_Stop = min(ORFs.items(), key=lambda p: (p[0] - G_Start) ** 2 + (G_Stop) ** 2)
         #This Seems to WORK!!!
         O_Start, O_Stop = min(ORFs.items(), key=lambda p: (p[0] - G_Start) **2 +(G_Stop)**2)  # Gets closest
 
@@ -57,10 +56,7 @@ def orfComparison(Genes,ORFs,Start_Codons,Stop_Codons,Genome):
         AND = SingleGene & SingleORF
         AND_Count_Stop = np.count_nonzero(AND)
 
-
-
-        O_Start, O_Stop = min(ORFs.items(), key=lambda (_, v): abs(v - G_Start))  # Gets closest
-
+        O_Start, O_Stop = min(ORFs.items(), key=lambda p: (p[0] - G_Stop) ** 2 + (G_Start) ** 2)
         SingleGene = np.zeros((Genome_Size), dtype=np.int)
         SingleORF = np.zeros((Genome_Size), dtype=np.int)
 
@@ -76,7 +72,7 @@ def orfComparison(Genes,ORFs,Start_Codons,Stop_Codons,Genome):
         AND_Count_Start = np.count_nonzero(AND)
 
         if AND_Count_Stop >= AND_Count_Start:
-            O_Start, O_Stop = min(ORFs.items(), key=lambda (_, v): abs(v - G_Stop))  # Gets closest
+            O_Start, O_Stop = min(ORFs.items(), key=lambda p: (p[0] - G_Start) **2 +(G_Stop)**2)
         else:
             Switch +=1
             print ("Switch")
@@ -178,7 +174,7 @@ def orfComparison(Genes,ORFs,Start_Codons,Stop_Codons,Genome):
         scStop = int(po.split(',')[1])
         if "-" in direction:
             print ("dire")
-        f_start, f_stop = min(ORFsFiltered.items(), key=lambda (_, v): abs(v - scStop)) #Gets closest
+        f_start, f_stop = min(ORFs.items(), key=lambda p: (p[0] - scStart) **2 +(scStop)**2)
 
         if str(scStop) == str(f_stop):# and str(scStart) == str(f_start):
             i = i+1
@@ -201,7 +197,7 @@ def orfComparison(Genes,ORFs,Start_Codons,Stop_Codons,Genome):
     for po, direction in Stop_Codons.iteritems():
         scStart = int(po.split(',')[0])
         scStop = int(po.split(',')[1])
-        f_start, f_stop = min(stop_ORFs_Filtered.items(), key=lambda (_, v): abs(v - scStart)) #Gets closest
+        f_start, f_stop = min(ORFs.items(), key=lambda p: (p[0] - scStart) **2 +(scStop)**2)
 
         if str(scStart) == str(f_stop):# and str(scStart) == str(f_start):
             i = i+1
@@ -216,9 +212,9 @@ def orfComparison(Genes,ORFs,Start_Codons,Stop_Codons,Genome):
             elif '+' in direction:
 
                 Stop_Codon.append(Genome[scStop-3:scStop-1 + 1])
-                print Genome[scStop-3:scStop-1 + 1]
+                print (Genome[scStop-3:scStop-1 + 1])
         else:
-            print "w"
+            print ("w")
 
 
 
@@ -264,7 +260,7 @@ def orfComparison(Genes,ORFs,Start_Codons,Stop_Codons,Genome):
             TGA += 1
         else:
             Other += 1
-            print codon
+            print (codon)
 
     TAG_Percentage = float((TAG) * float(100) / float(len(ORFsFiltered)))
     TAA_Percentage = float((TAA) * float(100) / float(len(ORFsFiltered)))
@@ -278,7 +274,7 @@ def orfComparison(Genes,ORFs,Start_Codons,Stop_Codons,Genome):
     ATT = 0
     CTG = 0
     Other = 0
-    print ORF_Num
+    print (ORF_Num)
 
     for codon in Start_Codon:
         if codon == 'ATG':
@@ -293,7 +289,7 @@ def orfComparison(Genes,ORFs,Start_Codons,Stop_Codons,Genome):
             CTG += 1
         else:
             Other += 1
-            print codon
+            print (codon)
 
 
 
@@ -324,28 +320,28 @@ def orfComparison(Genes,ORFs,Start_Codons,Stop_Codons,Genome):
         ORFArray[O_Start:O_Stop] = [1] * (O_Stop - O_Start)  # Changing all between the two positions to 1's
         oo.append(abs(O_Stop-O_Start))
 
-    print np.median(gg)
-    print np.median(oo)
+    print (np.median(gg))
+    print (np.median(oo))
 
 
 
-    print np.count_nonzero(GeneArray)
-    print np.count_nonzero(ORFArray)
+    print (np.count_nonzero(GeneArray))
+    print (np.count_nonzero(ORFArray))
 
-    print "Numbers"
+    print ("Numbers")
     AND = GeneArray & ORFArray
     AND_Count = np.count_nonzero(AND)
-    print AND_Count
+    print (AND_Count)
 
-    NOT_O = np.logical_not(ORFArray) + [0 for i in xrange(len(ORFArray))]
+    NOT_O = np.logical_not(ORFArray) + [0 for i in range(len(ORFArray))]
     NOT_O_AND_Gene = NOT_O & GeneArray
     NOT_O_AND_Gene_Count = np.count_nonzero(NOT_O_AND_Gene)
-    print NOT_O_AND_Gene_Count
+    print (NOT_O_AND_Gene_Count)
 
-    NOT_G = np.logical_not(GeneArray) + [0 for i in xrange(len(GeneArray))]
+    NOT_G = np.logical_not(GeneArray) + [0 for i in range(len(GeneArray))]
     NOT_G_AND_ORF = NOT_G & ORFArray
     NOT_G_AND_ORF_Count = np.count_nonzero(NOT_G_AND_ORF)
-    print NOT_G_AND_ORF_Count
+    print (NOT_G_AND_ORF_Count)
 
     NOT_NOT = NOT_G & NOT_O
     NOT_NOT_Count = np.count_nonzero(NOT_NOT)
@@ -364,7 +360,7 @@ def orfComparison(Genes,ORFs,Start_Codons,Stop_Codons,Genome):
     print (NT_FP)
     print (NT_TN)
 
-    print "Precision"
+    print ("Precision")
     Precision = NT_TP/(NT_TP+NT_FP)
     Recall = NT_TP/(NT_TP+NT_FN)
     print (Precision)

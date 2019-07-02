@@ -3,42 +3,12 @@ from DNA_Reverse_Compliment import revCompIterative
 from DNA_Reverse_Compliment import revCompIterative
 from OrfFinderComparison import orfComparison
 
-ProdigalInput = open('./Prodigal_K-12.txt', mode='rb')
-
-ProdigalOutput = open('./Prodigal_Metrics.csv', mode='wb')
-
-
-Genome_Input = open('/home/nick/Git/Open_Reading_Frame_Comparison/K-12.txt', mode='rb')
-
-
-Alignments = open('/home/nick/Git/Open_Reading_Frame_Comparison/K-12.gff', mode='rb')
-
-Genome = ""
-
-for line in Genome_Input:
-    line = line.replace("\n","")
-    if ">" not in line:
-        Genome += str(line)
-
-
-##############################################
+def prodigal(Genome):
 
 ProdigalORFs = collections.OrderedDict()
 ProdigalORFsFiltered = collections.OrderedDict()
-Genes = collections.OrderedDict()
 
 ProdigalLengths = []
-############################
-count = 0
-for line in Alignments:
-    if "Chromosome	ena	gene" in line:
-        count += 1
-        Start = int(line.split('\t')[3])
-        #Start = Start-3
-        Stop = int(line.split('\t')[4])
-        Gene = str(Start)+','+str(Stop)
-        Genes.update({count:Gene})
-
 ##################################
 Start_Codons = collections.OrderedDict()
 Stop_Codons = collections.OrderedDict()
