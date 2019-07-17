@@ -26,20 +26,24 @@ def orfComparison(Genes,ORFs,Start_Codons,Stop_Codons,Genome):
     Perfect_Matches = 0
     Perfect_Starts = 0
     Perfect_Stops = 0
-    Lengths = []
+    ORF_Lengths = []
+
+    Gene_Lengths = []
     ###################################################
 
     Switch = 0
-    for positions in Genes.itervalues():
+    for positions in iter(Genes.values()):
         G_Start = int(positions.split(',')[0])
         G_Stop = int(positions.split(',')[1])
+        Gene_length = G_Stop - G_Start
+        Gene_Lengths.append(Gene_length)
 
 
         Found = False
 
-        O_Start, O_Stop = min(ORFs.items(), key=lambda p: (p[0] - G_Start) ** 2 + (G_Stop) ** 2)
+
         #This Seems to WORK!!!
-        O_Start, O_Stop = min(ORFs.items(), key=lambda p: (p[0] - G_Start) **2 +(G_Stop)**2)  # Gets closest
+        O_Start, O_Stop = min(ORFs.items(), key=lambda p: (p[0] - G_Start) ** 2 + (G_Stop) ** 2)  # Gets closest
 
         SingleGene = np.zeros((Genome_Size), dtype=np.int)
         SingleORF = np.zeros((Genome_Size), dtype=np.int)
@@ -62,7 +66,7 @@ def orfComparison(Genes,ORFs,Start_Codons,Stop_Codons,Genome):
 
         gg = []
         oo = []
-
+        print (O_Start)
         SingleGene[G_Start:G_Stop] = [1] * (G_Stop - G_Start)  # Changing all between the two positions to 1's
         gg.append(abs(G_Stop - G_Start))
 
@@ -134,7 +138,7 @@ def orfComparison(Genes,ORFs,Start_Codons,Stop_Codons,Genome):
             Length = int(O_Stop) - int(O_Start)
             if Length < 1:
                 print ("DERP")
-            Lengths.append(Length)
+            ORF_Lengths.append(Length)
             frame_tmp = O_Stop - G_Stop
             if frame_tmp % 3 == 0 or frame_tmp == 0:
                 inFrame += 1
@@ -145,8 +149,8 @@ def orfComparison(Genes,ORFs,Start_Codons,Stop_Codons,Genome):
 
         ##################################
 
-    m = min(Lengths)
-    for positions in Genes.itervalues():
+    m = min(ORF_Lengths)
+    for positions in iter(Genes.values()):
         G_Start = int(positions.split(',')[0])
         G_Stop = int(positions.split(',')[1])  # If There is an un-covered Gene
         if G_Stop not in GCovered and G_Stop not in Under_Predicted:
@@ -169,7 +173,8 @@ def orfComparison(Genes,ORFs,Start_Codons,Stop_Codons,Genome):
 
     i = 0
     tempy = []
-    for po, direction in Start_Codons.iteritems():
+
+    for po, direction in iter(Start_Codons.items()):
         scStart = int(po.split(',')[0])
         scStop = int(po.split(',')[1])
         if "-" in direction:
@@ -192,9 +197,9 @@ def orfComparison(Genes,ORFs,Start_Codons,Stop_Codons,Genome):
 
     i = 0
     tempy = []
-    stop_ORFs_Filtered = dict((v,k) for k,v in ORFsFiltered.iteritems())
+    stop_ORFs_Filtered = dict((v,k) for k,v in iter(ORFsFiltered.items()))
 
-    for po, direction in Stop_Codons.iteritems():
+    for po, direction in iter(Stop_Codons.items()):
         scStart = int(po.split(',')[0])
         scStop = int(po.split(',')[1])
         f_start, f_stop = min(ORFs.items(), key=lambda p: (p[0] - scStart) **2 +(scStop)**2)
@@ -234,16 +239,29 @@ def orfComparison(Genes,ORFs,Start_Codons,Stop_Codons,Genome):
     Quarterly_Stop_Precison = np.percentile(Stop_Precision,25)
 
     ######################################################
-    Min_Length = 9999999999999
-    Max_Length = 0
-    Average_Length = sum(Lengths)/len(Lengths)
-    for length in Lengths:
-        if length < Min_Length:
-            Min_Length = length
-        if length > Max_Length:
-            Max_Length = length
-    print (Max_Length)
-    print ("Max")
+    #ORF Lengths
+    Min_ORF_Length = 9999999999999
+    Max_ORF_Length = 0
+    Average_ORF_Length = sum(ORF_Lengths)/len(ORF_Lengths)
+    for length in ORF_Lengths:
+        if length < Min_ORF_Length:
+            Min_ORF_Length = length
+        if length > Max_ORF_Length:
+            Max_ORF_Length = length
+    print (Max_ORF_Length)
+    print ("Max ORF Length")
+
+    #Gene Lengths
+    Min_Gene_Length = 9999999999999
+    Max_Gene_Length = 0
+    Average_Gene_Length = sum(Gene_Lengths)/len(Gene_Lengths)
+    for length in Gene_Lengths:
+        if length < Min_Gene_Length:
+            Min_Gene_Length = length
+        if length > Max_Gene_Length:
+            Max_Gene_Length = length
+    print (Max_Gene_Length)
+    print ("Max Gene Length")
     #############################################
     TAG = 0
     TAA = 0
@@ -310,13 +328,13 @@ def orfComparison(Genes,ORFs,Start_Codons,Stop_Codons,Genome):
 
     gg = []
     oo = []
-    for positions in Genes.itervalues():
+    for positions in iter(Genes.values()):
         G_Start = int(positions.split(',')[0])
         G_Stop = int(positions.split(',')[1])
         GeneArray[G_Start:G_Stop] = [1] * (G_Stop - G_Start) #Changing all between the two positions to 1's
         gg.append(abs(G_Stop-G_Start))
 
-    for O_Start, O_Stop in ORFsFiltered.iteritems():
+    for O_Start, O_Stop in iter(ORFsFiltered.items()):
         ORFArray[O_Start:O_Stop] = [1] * (O_Stop - O_Start)  # Changing all between the two positions to 1's
         oo.append(abs(O_Stop-O_Start))
 
@@ -367,6 +385,13 @@ def orfComparison(Genes,ORFs,Start_Codons,Stop_Codons,Genome):
     print (Recall)
 
 
+    ############################################
+    Num_ORFs_P = len(Genes) / len(ORFs) * 100
+    Num_Genes_P = len(Genes) / len(GCovered) * 100
+    Average_Length_P = Average_Gene_Length / Average_ORF_Length *100
+    Min_Lenth_P = Min_Gene_Length / Min_ORF_Length * 100
+    Max_Length_P = Max_Gene_Length / Max_ORF_Length * 100
+
 
 
     ############################################
@@ -384,16 +409,18 @@ def orfComparison(Genes,ORFs,Start_Codons,Stop_Codons,Genome):
     #############################################
     Frame_Percentage = inFrame*100/ORF_Num
     #############################################
-    Output = [len(ORFs), ORF_Num, len(GCovered), Average_Length, Min_Length, Max_Length, Median_Start_Precision,
-              Quarterly_Start_Precison, Median_Stop_Precision
-        , Quarterly_Stop_Precison, Perfect_Matches, Frame_Percentage,
-              format(ATG_Percentage, '.2f'), format(GTG_Percentage, '.2f'), format(TTG_Percentage, '.2f'),
-              format(ATT_Percentage, '.2f'), format(CTG_Percentage, '.2f'), format(Other_Percentage, '.2f'),
-              len(Under_Predicted), Over_Predicted, format(Sensitivity, '.2f'), format(Specificity, '.2f'), "Stats",
-              format(AND_Count, '.2f'), format(NT_TP, '.2f'), format(NOT_O_AND_Gene_Count, '.2f'), format(NT_FN, '.2f'),
-              format(NOT_G_AND_ORF_Count, '.2f'), format(NT_FP, '.2f'), format(NOT_NOT_Count, '.2f'),
-              format(NT_TN, '.2f'), format(Precision, '.2f'), format(Recall, '.2f'), format(TAG_Percentage, '.2f'),
-              format(TAA_Percentage, '.2f'), format(TGA_Percentage, '.2f'), format(Other_Percentage_STOP, '.2f')]
-    return Output, Start_Precision, Stop_Precision
+    output_Description = ['Number of Predicted ORFs','Percentage Difference of Predecited ORFs', 'Number of ORFs Overlapping a Gene', 'Number of Genes Covered', 'Percentage of Genes Covered',
+                         'Average Length of Predicted ORFs', 'Average Length of Predicted ORFs as % of G''Minimum Length of Predicted ORFs','Maximum Length of Predicted ORFs','Median Start Precision of Predicted ORFs',
+                         'Quarterly Start Precision of Predicted ORFs', 'Median Stop Precision of Predicted ORFs', 'Quarterly Stop Precision of Predicted ORFs', 'Percentage of Perfect Matches' ,
+                          'Number of Perfect Starts','Number of Perfect Stops', 'Correct Frame Percentage', 'Percentage of ORFs on Each Strand',  'Number of Under Predicted ORFs', 'Number of Overpredited ORFs', 'Sensitivity, Specificity',
+                          'ATG Start Percentage', 'GTG Start Percentage','TTG Start Percentage', 'ATT Start Percentage', 'CTG Start Percentage','Other Start Codon Percentage',
+                          'TAG Stop Percentage', 'TAA Stop Percentage', 'TGA Stop Percentage','Other Stop Codon Percentage']
+    Output = [len(ORFs), Num_ORFs_P, ORF_Num, len(GCovered),Num_Genes_P, Average_ORF_Length, Average_Length_P,Min_ORF_Length, Min_Lenth_P,Max_ORF_Length, Max_Length_P, Median_Start_Precision,
+              Quarterly_Start_Precison, Median_Stop_Precision,Quarterly_Stop_Precison,
+              Perfect_Matches, Perfect_Starts, Perfect_Stops,Frame_Percentage, Strand_P, len(Under_Predicted), Over_Predicted, format(Sensitivity, '.2f'), format(Specificity, '.2f'),format(ATG_Percentage, '.2f'),
+              format(GTG_Percentage, '.2f'), format(TTG_Percentage, '.2f'),format(ATT_Percentage, '.2f'), format(CTG_Percentage, '.2f'), format(Other_Percentage, '.2f'),format(TAG_Percentage, '.2f'),
+              format(TAA_Percentage, '.2f'), format(TGA_Percentage, '.2f'), format(Other_Percentage_STOP, '.2f'),format(AND_Count, '.2f'), format(NT_TP, '.2f'), format(NOT_O_AND_Gene_Count, '.2f'),
+              format(NT_FN, '.2f'),format(NOT_G_AND_ORF_Count, '.2f'), format(NT_FP, '.2f'), format(NOT_NOT_Count, '.2f'),format(NT_TN, '.2f'), format(Precision, '.2f'), format(Recall, '.2f')]
+    return output_Description, Output, Start_Precision, Stop_Precision
 
     ##################################################

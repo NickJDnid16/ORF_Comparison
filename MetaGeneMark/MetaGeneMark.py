@@ -49,7 +49,7 @@ for line in MetaGeneMarkInput:
         Start = int(line.split('\t')[3])
         Stop = int(line.split('\t')[4])
         if Start < Prev_Stop and OL == False:
-            print "Overlapping"
+            print ("Overlapping")
             OL = True
         Prev_Stop = Stop
         reverse = '-'

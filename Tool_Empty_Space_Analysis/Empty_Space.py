@@ -73,7 +73,7 @@ for line in Input:
         Combi_ORFs.update({ORF_NUM:str(str(Start) + ',' + str(Stop))})
         ORF_NUM += 1
 
- ######################################### Augustus
+ ######################################### augustus
 AugustusORFs = collections.OrderedDict()
 Prev_Stop = 0
 OL = False
